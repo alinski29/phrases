@@ -1,3 +1,5 @@
+package com.github.vladsandulescu.phrases;
+
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
@@ -6,15 +8,12 @@ import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations;
 import edu.stanford.nlp.trees.TypedDependency;
 import edu.stanford.nlp.util.CoreMap;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class Extract {
 
-    final String stopwordsFile = "stopwords.txt";
+    final InputStream stopwordsFile = getClass().getResourceAsStream("/stopwords.txt");
     List<String> stopwords;
 
     public Extract() {
@@ -108,7 +107,8 @@ public class Extract {
     private List<String> LoadStopwords() throws IOException {
         List<String> words = new ArrayList<String>();
 
-        BufferedReader br = new BufferedReader(new FileReader(stopwordsFile));
+        assert stopwordsFile != null;
+        BufferedReader br = new BufferedReader(new InputStreamReader(stopwordsFile));
         String line;
         while ((line = br.readLine()) != null) {
             words.add(line);

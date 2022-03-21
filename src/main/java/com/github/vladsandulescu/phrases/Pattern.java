@@ -1,3 +1,5 @@
+package com.github.vladsandulescu.phrases;
+
 import java.util.List;
 
 public class Pattern {

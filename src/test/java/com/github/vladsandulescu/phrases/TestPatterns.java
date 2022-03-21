@@ -1,3 +1,5 @@
+package com.github.vladsandulescu.phrases;
+
 import junit.framework.Assert;
 import org.junit.Test;
 
