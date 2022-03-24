@@ -10,6 +10,8 @@ public class Pattern {
     public Relation relation;
     public Pattern mother;
     public Pattern father;
+    public String headLemma;
+    public String modifierLemma;
 
     public Pattern(String head, String modifier, Relation relation) {
 

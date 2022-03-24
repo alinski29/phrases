@@ -1,6 +1,7 @@
 package com.github.vladsandulescu.phrases;
 
 import edu.stanford.nlp.ling.CoreAnnotations;
+import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.semgraph.SemanticGraph;
@@ -122,14 +123,28 @@ public class Extract {
         List<Pattern> patterns = new ArrayList<Pattern>();
 
         Properties props = new Properties();
-        props.setProperty("annotators", "tokenize, ssplit, pos, parse");
+        props.setProperty("annotators", "tokenize, ssplit, pos, lemma, parse");
         StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
         Annotation annotation = pipeline.process(text);
         List<CoreMap> sentences = annotation.get(CoreAnnotations.SentencesAnnotation.class);
         for (CoreMap sentence : sentences) {
-            patterns.addAll(ExtractSentencePatterns(sentence));
+            List<CoreLabel> tokens = sentence.get(CoreAnnotations.TokensAnnotation.class);
+            HashSet<Pattern> initialSentencePatterns = ExtractSentencePatterns(sentence);
+            HashSet<Pattern> sentencePatterns = new HashSet<>();
+            for (CoreLabel token : tokens) {
+                String word = token.word();
+                String lemma = token.lemma();
+                for (Pattern pattern : initialSentencePatterns) {
+                    if (Objects.equals(pattern.head, word)) {
+                        pattern.headLemma = lemma;
+                    } else if (Objects.equals(pattern.modifier, word)) {
+                        pattern.modifierLemma = lemma;
+                    }
+                    sentencePatterns.add(pattern);
+                }
+            }
+            patterns.addAll(sentencePatterns);
         }
-
         return patterns;
     }
 }
